@@ -1,0 +1,775 @@
+Perfeito! Estou criando um arquivo HTML completo que você pode baixar e usar imediatamente.
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Ponto Inteligente - Gerenciador de Jornada</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef2f7;
+    margin: 0;
+    padding: 20px;
+    color: #1a2c3e;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+h1 small {
+    font-size: 0.8rem;
+    font-weight: normal;
+    background: #cbd5e1;
+    padding: 5px 12px;
+    border-radius: 30px;
+    color: #1e293b;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-weight: 600;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0f3b5c;
+    border-left: 5px solid #2c7da0;
+    padding-left: 14px;
+}
+
+.row-flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+}
+
+.input-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #4a627a;
+}
+
+input, select, button {
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: 0.15s;
+    background: white;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #2c7da0;
+    box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+}
+
+button {
+    background: #2c7da0;
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+button:hover {
+    background: #1f5e7a;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.btn-outline {
+    background: white;
+    color: #2c7da0;
+    border: 1px solid #2c7da0;
+}
+
+.btn-outline:hover {
+    background: #e6f4f8;
+}
+
+.jornada-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0 16px 0;
+}
+
+.jornada-buttons button {
+    flex: 1;
+    min-width: 100px;
+    font-size: 1rem;
+    padding: 12px;
+    background: #f1f5f9;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+    box-shadow: none;
+}
+
+.jornada-buttons button:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+.btn-entrada { border-left: 4px solid #10b981 !important; }
+.btn-almoco-saida { border-left: 4px solid #f59e0b !important; }
+.btn-almoco-retorno { border-left: 4px solid #3b82f6 !important; }
+.btn-saida { border-left: 4px solid #ef4444 !important; }
+
+.local-info {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 12px;
+    font-family: monospace;
+    border: 1px dashed #cbd5e1;
+}
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.saldo-card {
+    background: #e6f7f0;
+    padding: 12px 24px;
+    border-radius: 60px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 12px;
+    font-weight: bold;
+}
+
+.saldo-card span:first-child {
+    font-size: 0.9rem;
+    color: #2c5f2d;
+}
+
+.saldo-card span:last-child {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0e4f1a;
+}
+
+.resumo-hoje {
+    font-size: 0.85rem;
+    background: #f1f5f9;
+    padding: 8px 18px;
+    border-radius: 30px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+th {
+    background: #eef2ff;
+    padding: 14px 8px;
+    font-weight: 600;
+    color: #1e293b;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+tr:hover {
+    background: #f9fbfd;
+}
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.btn-pequeno {
+    background: none;
+    color: #475569;
+    box-shadow: none;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+}
+
+.btn-pequeno:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #fecaca;
+}
+
+.status-badge {
+    display: inline-block;
+    background: #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.download-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.download-card:hover {
+    transform: translateY(-3px);
+}
+
+.download-card h3 {
+    color: white;
+    border-left-color: white;
+}
+
+.download-card button {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    font-size: 1.1rem;
+    padding: 12px 24px;
+}
+
+.download-card button:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.02);
+}
+
+@media (max-width: 700px) {
+    body { padding: 12px; }
+    .card { padding: 16px; }
+    .jornada-buttons button { font-size: 0.8rem; min-width: 70px; }
+    .saldo-card span:last-child { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>⏱️ Ponto Inteligente 
+        <small>Controle de Jornada</small>
+    </h1>
+
+    <!-- Botão de Download do App -->
+    <div class="card download-card" onclick="baixarApp()" style="cursor: pointer;">
+        <h3>📱 Baixar este Aplicativo</h3>
+        <p style="margin: 10px 0;">Clique aqui para salvar o app no seu computador ou celular. Use offline!</p>
+        <button class="btn-outline" style="background: white; color: #667eea;">💾 Baixar App (HTML)</button>
+        <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.8;">✓ Funciona offline • ✓ Dados salvos localmente • ✓ Sem internet necessária</p>
+    </div>
+
+    <!-- Card Funcionário -->
+    <div class="card">
+        <h3>👤 Funcionários</h3>
+        <div class="row-flex">
+            <div class="input-group">
+                <label>Nome completo</label>
+                <input id="nome" placeholder="Ex: Ana Silva" autocomplete="off">
+            </div>
+            <button onclick="addFuncionario()">➕ Cadastrar</button>
+            <div class="input-group">
+                <label>Selecionar funcionário</label>
+                <select id="funcionario"></select>
+            </div>
+            <button onclick="excluirFuncionario()" class="btn-outline" style="background:#fff1f0;color:#b91c1c;">🗑️ Excluir atual</button>
+        </div>
+    </div>
+
+    <!-- Card Registro Rápido -->
+    <div class="card">
+        <h3>📌 Marcar Ponto</h3>
+        <div class="jornada-buttons">
+            <button class="btn-entrada" onclick="registrar('entrada')">🟢 ENTRADA</button>
+            <button class="btn-almoco-saida" onclick="registrar('almoco_saida')">🍽️ SAÍDA ALMOÇO</button>
+            <button class="btn-almoco-retorno" onclick="registrar('almoco_retorno')">🔙 RETORNO ALMOÇO</button>
+            <button class="btn-saida" onclick="registrar('saida')">🔴 SAÍDA</button>
+        </div>
+        <div id="geo" class="local-info">📍 Aguardando permissão de localização...</div>
+        <div id="ultimoRegistro" style="font-size:0.75rem; margin-top: 8px; color:#475569;"></div>
+    </div>
+
+    <!-- Dashboard inteligente -->
+    <div class="card">
+        <h3>📊 Dashboard & Banco de Horas</h3>
+        <div class="dashboard">
+            <div class="saldo-card">
+                <span>⚖️ Banco de Horas (HOJE)</span>
+                <span id="saldoHoje">0h 0min</span>
+            </div>
+            <div class="saldo-card">
+                <span>📅 Total de horas trabalhadas (mês)</span>
+                <span id="totalMes">0h</span>
+            </div>
+            <div class="resumo-hoje" id="statusHoje">
+                ⏳ Nenhum ponto hoje
+            </div>
+            <div>
+                <button onclick="exportarCSV()" class="btn-outline">📎 Exportar CSV completo</button>
+                <button onclick="limparTodosRegistros()" class="btn-pequeno" style="color:#b91c1c;">🗑️ Limpar tudo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros e Tabela -->
+    <div class="card">
+        <h3>📋 Histórico de Registros</h3>
+        <div class="filtros">
+            <div class="input-group">
+                <label>Filtrar funcionário</label>
+                <select id="filtroFuncionario">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Data inicial</label>
+                <input type="date" id="dataInicio">
+            </div>
+            <div class="input-group">
+                <label>Data final</label>
+                <input type="date" id="dataFim">
+            </div>
+            <button onclick="aplicarFiltros()" class="btn-outline">🔍 Filtrar</button>
+            <button onclick="limparFiltros()" class="btn-pequeno">Limpar</button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Funcionário</th><th>Data</th><th>Evento</th><th>Hora</th><th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tb"></tbody>
+            </table>
+        </div>
+        <p style="text-align:right; font-size:0.7rem; margin-top:10px;">* Banco de horas diário: Saldo calculado com base na jornada padrão 8h (48min almoço)</p>
+    </div>
+</div>
+
+<script>
+// ---------- ESTRUTURA DE DADOS ----------
+let funcionarios = JSON.parse(localStorage.getItem('funcionarios') || '[]');
+let registros = JSON.parse(localStorage.getItem('registros') || '[]');
+
+// Função para baixar o app (salvar o HTML)
+function baixarApp() {
+    const htmlContent = document.documentElement.outerHTML;
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = 'ponto-inteligente.html';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    // Mostrar feedback
+    const msg = document.createElement('div');
+    msg.textContent = '✅ Download iniciado! O app foi salvo no seu dispositivo.';
+    msg.style.position = 'fixed';
+    msg.style.bottom = '20px';
+    msg.style.right = '20px';
+    msg.style.backgroundColor = '#10b981';
+    msg.style.color = 'white';
+    msg.style.padding = '12px 24px';
+    msg.style.borderRadius = '12px';
+    msg.style.zIndex = '9999';
+    msg.style.fontWeight = 'bold';
+    document.body.appendChild(msg);
+    setTimeout(() => msg.remove(), 3000);
+}
+
+function salvar() {
+    localStorage.setItem('funcionarios', JSON.stringify(funcionarios));
+    localStorage.setItem('registros', JSON.stringify(registros));
+}
+
+function atualizarSelectFuncionarios() {
+    const selectFunc = document.getElementById('funcionario');
+    const filtroSelect = document.getElementById('filtroFuncionario');
+    if (!selectFunc) return;
+    selectFunc.innerHTML = '';
+    filtroSelect.innerHTML = '<option value="">Todos</option>';
+    if (funcionarios.length === 0) {
+        const opt = document.createElement('option');
+        opt.textContent = '-- Nenhum funcionário --';
+        opt.value = '';
+        selectFunc.appendChild(opt);
+        filtroSelect.appendChild(opt.cloneNode(true));
+    } else {
+        funcionarios.forEach(f => {
+            let opt = document.createElement('option');
+            opt.textContent = f;
+            opt.value = f;
+            selectFunc.appendChild(opt);
+            let optFiltro = document.createElement('option');
+            optFiltro.textContent = f;
+            optFiltro.value = f;
+            filtroSelect.appendChild(optFiltro);
+        });
+    }
+}
+
+function addFuncionario() {
+    let nome = document.getElementById('nome').value.trim();
+    if (!nome) { alert('Digite um nome válido'); return; }
+    if (funcionarios.includes(nome)) { alert('Funcionário já cadastrado!'); return; }
+    funcionarios.push(nome);
+    salvar();
+    atualizarSelectFuncionarios();
+    document.getElementById('nome').value = '';
+    renderTabela();
+}
+
+function excluirFuncionario() {
+    let selecionado = document.getElementById('funcionario').value;
+    if (!selecionado || selecionado === '-- Nenhum funcionário --') { alert('Selecione um funcionário para excluir'); return; }
+    if (!confirm(`Remover "${selecionado}" e TODOS os seus registros?`)) return;
+    funcionarios = funcionarios.filter(f => f !== selecionado);
+    registros = registros.filter(r => r.funcionario !== selecionado);
+    salvar();
+    atualizarSelectFuncionarios();
+    renderTabela();
+    atualizarDashboard();
+}
+
+function registrar(tipo) {
+    let func = document.getElementById('funcionario').value;
+    if (!func || func === '-- Nenhum funcionário --') { alert('Cadastre ou selecione um funcionário primeiro.'); return; }
+    let agora = new Date();
+    let dataStr = agora.toLocaleDateString('pt-BR');
+    let horaStr = agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    
+    let mesmoDia = registros.filter(r => r.funcionario === func && r.data === dataStr);
+    let ultimoEvento = mesmoDia.length ? mesmoDia[mesmoDia.length-1] : null;
+    if (ultimoEvento && ultimoEvento.tipo === tipo) {
+        if(!confirm(`Atenção: ${tipo} já foi registrado hoje. Deseja adicionar outro registro mesmo assim?`)) return;
+    }
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const geoMsg = ` (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
+            finalizarRegistro(func, dataStr, horaStr, tipo, geoMsg);
+        }, () => {
+            finalizarRegistro(func, dataStr, horaStr, tipo, ' (localização não disponível)');
+        });
+    } else {
+        finalizarRegistro(func, dataStr, horaStr, tipo, '');
+    }
+    
+    function finalizarRegistro(func, data, hora, tipo, geoText) {
+        let item = {
+            funcionario: func,
+            data: data,
+            hora: hora,
+            tipo: tipo,
+            timestamp: new Date().toISOString(),
+            geo: geoText
+        };
+        registros.push(item);
+        salvar();
+        renderTabela();
+        atualizarDashboard();
+        const ultimoDiv = document.getElementById('ultimoRegistro');
+        ultimoDiv.innerHTML = `✅ Último ponto: ${func} - ${tipo} às ${hora} ${geoText}`;
+        ultimoDiv.style.opacity = '1';
+        setTimeout(() => {
+            if(ultimoDiv) ultimoDiv.style.opacity = '0.6';
+        }, 3000);
+    }
+}
+
+function calcularHorasTrabalhadasDia(registrosFunc, dataAlvo) {
+    let diarios = registrosFunc.filter(r => r.data === dataAlvo).sort((a,b)=> (a.hora < b.hora ? -1 : 1));
+    let entrada = diarios.find(r => r.tipo === 'entrada');
+    let almocoSaida = diarios.find(r => r.tipo === 'almoco_saida');
+    let almocoRetorno = diarios.find(r => r.tipo === 'almoco_retorno');
+    let saida = diarios.find(r => r.tipo === 'saida');
+    
+    if (!entrada || !saida) return 0;
+    
+    function horaParaMinutos(horaStr) {
+        let [h,m,s] = horaStr.split(':');
+        return parseInt(h) * 60 + parseInt(m);
+    }
+    
+    let inicio = horaParaMinutos(entrada.hora);
+    let fim = horaParaMinutos(saida.hora);
+    let almocoInicio = almocoSaida ? horaParaMinutos(almocoSaida.hora) : null;
+    let almocoFim = almocoRetorno ? horaParaMinutos(almocoRetorno.hora) : null;
+    
+    let totalMinutos = fim - inicio;
+    if (almocoInicio && almocoFim && almocoFim > almocoInicio) {
+        totalMinutos -= (almocoFim - almocoInicio);
+    } else if (almocoInicio && !almocoFim) {
+        totalMinutos -= 48;
+    } else if (!almocoInicio && almocoFim) {
+        totalMinutos -= 48;
+    } else {
+        totalMinutos -= 48;
+    }
+    return Math.max(0, totalMinutos);
+}
+
+const JORNADA_PADRAO_MIN = 8 * 60;
+
+function getSaldoMinutosHoje(funcionarioSelecionado) {
+    let hoje = new Date().toLocaleDateString('pt-BR');
+    let regsFunc = registros.filter(r => r.funcionario === funcionarioSelecionado);
+    let minutosTrab = calcularHorasTrabalhadasDia(regsFunc, hoje);
+    let saldo = minutosTrab - JORNADA_PADRAO_MIN;
+    return { minutosTrab, saldo };
+}
+
+function formatarMinutos(min) {
+    let sinal = min >= 0 ? '' : '-';
+    let absMin = Math.abs(min);
+    let h = Math.floor(absMin / 60);
+    let m = absMin % 60;
+    return `${sinal}${h}h ${m}min`;
+}
+
+function atualizarDashboard() {
+    let funcSelecionado = document.getElementById('funcionario').value;
+    if (!funcionarios.length || !funcSelecionado || funcSelecionado === '-- Nenhum funcionário --') {
+        document.getElementById('saldoHoje').innerText = '0h 0min';
+        document.getElementById('totalMes').innerText = '0h';
+        document.getElementById('statusHoje').innerHTML = '👤 Selecione um funcionário';
+        return;
+    }
+    
+    let { minutosTrab, saldo } = getSaldoMinutosHoje(funcSelecionado);
+    document.getElementById('saldoHoje').innerHTML = formatarMinutos(saldo);
+    
+    let hoje = new Date().toLocaleDateString('pt-BR');
+    let pontosHoje = registros.filter(r => r.funcionario === funcSelecionado && r.data === hoje);
+    let temEntrada = pontosHoje.some(p => p.tipo === 'entrada');
+    let temSaida = pontosHoje.some(p => p.tipo === 'saida');
+    let statusMsg = '';
+    if(!temEntrada) statusMsg = '⏳ Nenhum registro hoje';
+    else if(temEntrada && !temSaida) statusMsg = '🟢 Em andamento (sem saída)';
+    else if(temEntrada && temSaida) statusMsg = `✅ Finalizado: ${Math.floor(minutosTrab/60)}h${minutosTrab%60}min trabalhados`;
+    document.getElementById('statusHoje').innerHTML = statusMsg;
+    
+    let agora = new Date();
+    let totalMinutosMes = 0;
+    let registrosFunc = registros.filter(r => r.funcionario === funcSelecionado);
+    let diasUnicos = [...new Set(registrosFunc.map(r=>r.data))];
+    diasUnicos.forEach(dia => {
+        let dataParts = dia.split('/');
+        if(dataParts.length===3){
+            let diaMes = parseInt(dataParts[1]);
+            let ano = parseInt(dataParts[2]);
+            if(diaMes === (agora.getMonth()+1) && ano === agora.getFullYear()){
+                totalMinutosMes += calcularHorasTrabalhadasDia(registrosFunc, dia);
+            }
+        }
+    });
+    let horasMes = (totalMinutosMes / 60).toFixed(1);
+    document.getElementById('totalMes').innerHTML = `${horasMes}h`;
+}
+
+let filtroAtual = {func: '', inicio: '', fim: ''};
+
+function aplicarFiltros() {
+    filtroAtual.func = document.getElementById('filtroFuncionario').value;
+    filtroAtual.inicio = document.getElementById('dataInicio').value;
+    filtroAtual.fim = document.getElementById('dataFim').value;
+    renderTabela();
+}
+
+function limparFiltros() {
+    document.getElementById('filtroFuncionario').value = '';
+    document.getElementById('dataInicio').value = '';
+    document.getElementById('dataFim').value = '';
+    filtroAtual = {func: '', inicio: '', fim: ''};
+    renderTabela();
+}
+
+function renderTabela() {
+    let filtrados = [...registros];
+    
+    if (filtroAtual.func) {
+        filtrados = filtrados.filter(r => r.funcionario === filtroAtual.func);
+    }
+    if (filtroAtual.inicio) {
+        let inicioDate = new Date(filtroAtual.inicio);
+        filtrados = filtrados.filter(r => {
+            let [dia, mes, ano] = r.data.split('/');
+            let regDate = new Date(`${ano}-${mes}-${dia}`);
+            return regDate >= inicioDate;
+        });
+    }
+    if (filtroAtual.fim) {
+        let fimDate = new Date(filtroAtual.fim);
+        fimDate.setHours(23,59,59);
+        filtrados = filtrados.filter(r => {
+            let [dia, mes, ano] = r.data.split('/');
+            let regDate = new Date(`${ano}-${mes}-${dia}`);
+            return regDate <= fimDate;
+        });
+    }
+    
+    filtrados.sort((a,b)=> (b.timestamp || '').localeCompare(a.timestamp || ''));
+    
+    let tbody = document.getElementById('tb');
+    tbody.innerHTML = '';
+    if (filtrados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">Nenhum registro encontrado</td></tr>';
+        return;
+    }
+    filtrados.forEach((reg, idx) => {
+        let tipoExibicao = {
+            'entrada':'🟢 Entrada', 'almoco_saida':'🍽️ Saída Almoço',
+            'almoco_retorno':'🔙 Retorno Almoço', 'saida':'🔴 Saída'
+        }[reg.tipo] || reg.tipo;
+        let row = tbody.insertRow();
+        row.insertCell(0).innerText = reg.funcionario;
+        row.insertCell(1).innerText = reg.data;
+        row.insertCell(2).innerHTML = `<span class="status-badge">${tipoExibicao}</span>`;
+        row.insertCell(3).innerText = reg.hora;
+        let acaoCell = row.insertCell(4);
+        let btnDel = document.createElement('button');
+        btnDel.innerText = 'Excluir';
+        btnDel.className = 'delete-btn';
+        btnDel.onclick = () => {
+            if(confirm('Remover este registro?')){
+                const index = registros.findIndex((r, i) => 
+                    r.timestamp === reg.timestamp && r.hora === reg.hora && r.data === reg.data && r.funcionario === reg.funcionario
+                );
+                if(index !== -1) registros.splice(index, 1);
+                salvar();
+                renderTabela();
+                atualizarDashboard();
+            }
+        };
+        acaoCell.appendChild(btnDel);
+    });
+    atualizarDashboard();
+}
+
+function exportarCSV() {
+    let cabecalho = "Funcionario,Data,Hora,Evento,Geolocalizacao\n";
+    let linhas = registros.map(r => {
+        let tipoMap = {'entrada':'Entrada','almoco_saida':'Saída Almoço','almoco_retorno':'Retorno Almoço','saida':'Saída'};
+        return `"${r.funcionario}","${r.data}","${r.hora}","${tipoMap[r.tipo] || r.tipo}","${r.geo || ''}"`;
+    }).join("\n");
+    let blob = new Blob([cabecalho + linhas], {type: 'text/csv;charset=utf-8;'});
+    let link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ponto_${new Date().toISOString().slice(0,19)}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
+function limparTodosRegistros() {
+    if(confirm('⚠️ ATENÇÃO: Isso apagará TODOS os registros de ponto de todos os funcionários. Irreversível. Continuar?')){
+        registros = [];
+        salvar();
+        renderTabela();
+        atualizarDashboard();
+        alert('Todos os registros foram removidos.');
+    }
+}
+
+if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos => {
+        document.getElementById('geo').innerHTML = `📍 Localização atual: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)} (capturada no registro)`;
+    }, () => {
+        document.getElementById('geo').innerHTML = '📍 Permissão de localização negada. Pontos serão registrados sem coordenadas.';
+    });
+} else {
+    document.getElementById('geo').innerHTML = '📍 Geolocalização não suportada.';
+}
+
+atualizarSelectFuncionarios();
+renderTabela();
+setInterval(() => {
+    atualizarDashboard();
+}, 3000);
+window.addEventListener('storage', () => {
+    funcionarios = JSON.parse(localStorage.getItem('funcionarios') || '[]');
+    registros = JSON.parse(localStorage.getItem('registros') || '[]');
+    atualizarSelectFuncionarios();
+    renderTabela();
+});
+</script>
+</body>
+</html>
+```
