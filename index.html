@@ -3,7 +3,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>Ponto Inteligente - Gerenciador de Jornada</title>
 <style>
 * {
@@ -95,10 +95,6 @@ body {
 .clock-date {
     font-size: 0.8rem;
     color: #cbd5e1;
-}
-
-h1 {
-    display: none;
 }
 
 .card {
@@ -548,8 +544,204 @@ tr:hover {
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
+// Função para gerar PDF sem dependências externas - método nativo de impressão
+// Isso funciona 100% em APKs pois usa o mecanismo nativo do Android
+function exportarPDF() {
+    // Verificar se há registros para exportar
+    if (registros.length === 0) {
+        alert('Nenhum registro para exportar!');
+        return;
+    }
+    
+    // Criar uma nova janela para impressão/PDF
+    const conteudo = gerarConteudoPDF();
+    
+    // Criar um iframe oculto para gerar o PDF (mais compatível com WebView)
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+    
+    const iframeDoc = iframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(conteudo);
+    iframeDoc.close();
+    
+    // Aguardar carregamento e chamar print
+    setTimeout(() => {
+        try {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+            
+            // Remover o iframe após o print (ou após um tempo)
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 1000);
+        } catch (e) {
+            console.error('Erro ao gerar PDF:', e);
+            alert('Erro ao gerar PDF. Tente novamente.');
+            document.body.removeChild(iframe);
+        }
+    }, 500);
+}
+
+function gerarConteudoPDF() {
+    // Obter dados filtrados para o PDF
+    let dadosExport = [...registros];
+    
+    // Aplicar filtros atuais ao PDF
+    if (filtroAtual.func) {
+        dadosExport = dadosExport.filter(r => r.funcionario === filtroAtual.func);
+    }
+    if (filtroAtual.inicio) {
+        let inicioDate = new Date(filtroAtual.inicio);
+        dadosExport = dadosExport.filter(r => {
+            let [dia, mes, ano] = r.data.split('/');
+            let regDate = new Date(`${ano}-${mes}-${dia}`);
+            return regDate >= inicioDate;
+        });
+    }
+    if (filtroAtual.fim) {
+        let fimDate = new Date(filtroAtual.fim);
+        fimDate.setHours(23, 59, 59);
+        dadosExport = dadosExport.filter(r => {
+            let [dia, mes, ano] = r.data.split('/');
+            let regDate = new Date(`${ano}-${mes}-${dia}`);
+            return regDate <= fimDate;
+        });
+    }
+    
+    dadosExport.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
+    
+    // Construir HTML do PDF
+    const agora = new Date();
+    const dataHora = agora.toLocaleString('pt-BR');
+    
+    let linhasTabela = '';
+    dadosExport.forEach(reg => {
+        const tipoMap = {
+            'entrada': '🟢 Entrada',
+            'almoco_saida': '🍽️ Saída Almoço',
+            'almoco_retorno': '🔙 Retorno Almoço',
+            'saida': '🔴 Saída'
+        };
+        linhasTabela += `
+            <tr>
+                <td style="border:1px solid #ccc; padding:8px;">${reg.funcionario}</td>
+                <td style="border:1px solid #ccc; padding:8px;">${reg.data}</td>
+                <td style="border:1px solid #ccc; padding:8px;">${tipoMap[reg.tipo] || reg.tipo}</td>
+                <td style="border:1px solid #ccc; padding:8px;">${reg.hora}</td>
+            </tr>
+        `;
+    });
+    
+    return `<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Relatório de Pontos</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                margin: 20px;
+                padding: 20px;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #2c7da0;
+                padding-bottom: 15px;
+            }
+            .header h1 {
+                color: #1e293b;
+                margin: 0 0 5px 0;
+            }
+            .header p {
+                color: #475569;
+                margin: 5px 0;
+            }
+            .info {
+                margin-bottom: 20px;
+                padding: 10px;
+                background: #f1f5f9;
+                border-radius: 8px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+            }
+            th {
+                background: #2c7da0;
+                color: white;
+                padding: 10px;
+                border: 1px solid #1f5e7a;
+            }
+            td {
+                border: 1px solid #cbd5e1;
+                padding: 8px;
+            }
+            .footer {
+                margin-top: 30px;
+                text-align: center;
+                font-size: 0.8rem;
+                color: #64748b;
+                border-top: 1px solid #e2e8f0;
+                padding-top: 15px;
+            }
+            @media print {
+                body {
+                    margin: 0;
+                    padding: 10px;
+                }
+                .no-print {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>⏱️ Ponto Inteligente - Relatório de Registros</h1>
+            <p>Gerado em: ${dataHora}</p>
+        </div>
+        <div class="info">
+            <strong>📊 Resumo:</strong> Total de registros: ${dadosExport.length}<br>
+            ${filtroAtual.func ? `<strong>👤 Funcionário:</strong> ${filtroAtual.func}<br>` : ''}
+            ${filtroAtual.inicio ? `<strong>📅 Data inicial:</strong> ${new Date(filtroAtual.inicio).toLocaleDateString('pt-BR')}<br>` : ''}
+            ${filtroAtual.fim ? `<strong>📅 Data final:</strong> ${new Date(filtroAtual.fim).toLocaleDateString('pt-BR')}<br>` : ''}
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Funcionário</th>
+                    <th>Data</th>
+                    <th>Evento</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${linhasTabela || '<tr><td colspan="4" style="text-align:center;">Nenhum registro encontrado</td></tr>'}
+            </tbody>
+        </table>
+        <div class="footer">
+            <p>Documento gerado pelo sistema Ponto Inteligente | Todos os direitos reservados</p>
+            <p>* Este documento serve como comprovante de registros de ponto</p>
+        </div>
+        <script>
+            window.onload = function() {
+                setTimeout(function() {
+                    window.print();
+                }, 100);
+            };
+        <\/script>
+    </body>
+    </html>`;
+}
+
 let funcionarios = JSON.parse(localStorage.getItem('funcionarios') || '[]');
 let registros = JSON.parse(localStorage.getItem('registros') || '[]');
 let registroEditando = null;
@@ -571,17 +763,6 @@ function atualizarRelogio() {
     const dateElement = document.getElementById('currentDate');
     if (clockElement) clockElement.textContent = timeString;
     if (dateElement) dateElement.textContent = dataString;
-    
-    // Animação do ícone do relógio
-    const icon = document.querySelector('.clock-icon');
-    if (icon) {
-        const seg = agora.getSeconds();
-        if (seg % 2 === 0) {
-            icon.style.transform = 'rotate(5deg)';
-        } else {
-            icon.style.transform = 'rotate(-5deg)';
-        }
-    }
 }
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
@@ -692,56 +873,35 @@ function registrar(tipo) {
     let dataStr = agora.toLocaleDateString('pt-BR');
     let horaStr = agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
     
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-            const geoMsg = ` (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
-            finalizarRegistro(func, dataStr, horaStr, tipo, geoMsg);
-        }, () => {
-            finalizarRegistro(func, dataStr, horaStr, tipo, '');
-        });
-    } else {
-        finalizarRegistro(func, dataStr, horaStr, tipo, '');
-    }
-    
-    function finalizarRegistro(func, data, hora, tipo, geoText) {
-        let item = {
-            funcionario: func,
-            data: data,
-            hora: hora,
-            tipo: tipo,
-            timestamp: new Date().toISOString(),
-            geo: geoText
-        };
-        registros.push(item);
-        salvar();
-        renderTabela();
-        atualizarDashboard();
-        const ultimoDiv = document.getElementById('ultimoRegistro');
-        ultimoDiv.innerHTML = `✅ Último ponto: ${func} - ${tipo} às ${hora} ${geoText}`;
-        setTimeout(() => {
-            if(ultimoDiv) ultimoDiv.style.opacity = '0.6';
-        }, 3000);
-    }
+    let item = {
+        funcionario: func,
+        data: dataStr,
+        hora: horaStr,
+        tipo: tipo,
+        timestamp: new Date().toISOString(),
+        geo: ''
+    };
+    registros.push(item);
+    salvar();
+    renderTabela();
+    atualizarDashboard();
+    const ultimoDiv = document.getElementById('ultimoRegistro');
+    ultimoDiv.innerHTML = `✅ Último ponto: ${func} - ${tipo} às ${horaStr}`;
+    setTimeout(() => {
+        if(ultimoDiv) ultimoDiv.style.opacity = '0.6';
+    }, 3000);
 }
 
 function editarRegistro(index) {
     registroEditando = index;
     const reg = registros[index];
-    
-    document.getElementById('modalTitle').innerText = '✏️ Editar Registro de Ponto';
     document.getElementById('editFuncionario').value = reg.funcionario;
-    
     const [dia, mes, ano] = reg.data.split('/');
     const dataISO = `${ano}-${mes}-${dia}`;
     document.getElementById('editData').value = dataISO;
-    
-    let horaValue = reg.hora;
-    if (horaValue.length === 8) {
-        horaValue = horaValue.substring(0, 5);
-    }
+    let horaValue = reg.hora.substring(0, 5);
     document.getElementById('editHora').value = horaValue;
     document.getElementById('editTipo').value = reg.tipo;
-    
     document.getElementById('editModal').style.display = 'block';
 }
 
@@ -752,25 +912,13 @@ function fecharModal() {
 
 function salvarEdicao() {
     if (registroEditando === null) return;
-    
     const novoFunc = document.getElementById('editFuncionario').value;
     const novaData = document.getElementById('editData').value;
     const novaHora = document.getElementById('editHora').value;
     const novoTipo = document.getElementById('editTipo').value;
-    
-    if (!novoFunc || !novaData || !novaHora) {
-        alert('Preencha todos os campos');
-        return;
-    }
-    
     const dataParts = novaData.split('-');
     const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
-    
-    let horaCompleta = novaHora;
-    if (novaHora.length === 5) {
-        horaCompleta = novaHora + ':00';
-    }
-    
+    let horaCompleta = novaHora + ':00';
     registros[registroEditando] = {
         ...registros[registroEditando],
         funcionario: novoFunc,
@@ -779,11 +927,10 @@ function salvarEdicao() {
         tipo: novoTipo,
         timestamp: new Date().toISOString()
     };
-    
     salvar();
     renderTabela();
     fecharModal();
-    alert('Registro atualizado com sucesso!');
+    alert('Registro atualizado!');
 }
 
 function calcularHorasTrabalhadasDia(registrosFunc, dataAlvo) {
@@ -792,26 +939,18 @@ function calcularHorasTrabalhadasDia(registrosFunc, dataAlvo) {
     let almocoSaida = diarios.find(r => r.tipo === 'almoco_saida');
     let almocoRetorno = diarios.find(r => r.tipo === 'almoco_retorno');
     let saida = diarios.find(r => r.tipo === 'saida');
-    
     if (!entrada || !saida) return 0;
-    
     function horaParaMinutos(horaStr) {
         let [h,m] = horaStr.split(':');
         return parseInt(h) * 60 + parseInt(m);
     }
-    
     let inicio = horaParaMinutos(entrada.hora);
     let fim = horaParaMinutos(saida.hora);
     let almocoInicio = almocoSaida ? horaParaMinutos(almocoSaida.hora) : null;
     let almocoFim = almocoRetorno ? horaParaMinutos(almocoRetorno.hora) : null;
-    
     let totalMinutos = fim - inicio;
     if (almocoInicio && almocoFim && almocoFim > almocoInicio) {
         totalMinutos -= (almocoFim - almocoInicio);
-    } else if (almocoInicio && !almocoFim) {
-        totalMinutos -= 48;
-    } else if (!almocoInicio && almocoFim) {
-        totalMinutos -= 48;
     } else {
         totalMinutos -= 48;
     }
@@ -819,14 +958,6 @@ function calcularHorasTrabalhadasDia(registrosFunc, dataAlvo) {
 }
 
 const JORNADA_PADRAO_MIN = 8 * 60;
-
-function getSaldoMinutosHoje(funcionarioSelecionado) {
-    let hoje = new Date().toLocaleDateString('pt-BR');
-    let regsFunc = registros.filter(r => r.funcionario === funcionarioSelecionado);
-    let minutosTrab = calcularHorasTrabalhadasDia(regsFunc, hoje);
-    let saldo = minutosTrab - JORNADA_PADRAO_MIN;
-    return { minutosTrab, saldo };
-}
 
 function formatarMinutos(min) {
     let sinal = min >= 0 ? '' : '-';
@@ -844,36 +975,25 @@ function atualizarDashboard() {
         document.getElementById('statusHoje').innerHTML = '👤 Selecione um funcionário';
         return;
     }
-    
-    let { minutosTrab, saldo } = getSaldoMinutosHoje(funcSelecionado);
-    document.getElementById('saldoHoje').innerHTML = formatarMinutos(saldo);
-    
     let hoje = new Date().toLocaleDateString('pt-BR');
-    let pontosHoje = registros.filter(r => r.funcionario === funcSelecionado && r.data === hoje);
-    let temEntrada = pontosHoje.some(p => p.tipo === 'entrada');
-    let temSaida = pontosHoje.some(p => p.tipo === 'saida');
-    let statusMsg = '';
-    if(!temEntrada) statusMsg = '⏳ Nenhum registro hoje';
-    else if(temEntrada && !temSaida) statusMsg = '🟢 Em andamento (sem saída)';
-    else if(temEntrada && temSaida) statusMsg = `✅ Finalizado: ${Math.floor(minutosTrab/60)}h${minutosTrab%60}min trabalhados`;
+    let regsFunc = registros.filter(r => r.funcionario === funcSelecionado);
+    let minutosTrab = calcularHorasTrabalhadasDia(regsFunc, hoje);
+    let saldo = minutosTrab - JORNADA_PADRAO_MIN;
+    document.getElementById('saldoHoje').innerHTML = formatarMinutos(saldo);
+    let temEntrada = regsFunc.some(r => r.data === hoje && r.tipo === 'entrada');
+    let temSaida = regsFunc.some(r => r.data === hoje && r.tipo === 'saida');
+    let statusMsg = !temEntrada ? '⏳ Nenhum registro hoje' : (!temSaida ? '🟢 Em andamento' : `✅ Finalizado: ${Math.floor(minutosTrab/60)}h${minutosTrab%60}min`);
     document.getElementById('statusHoje').innerHTML = statusMsg;
-    
     let agora = new Date();
     let totalMinutosMes = 0;
-    let registrosFunc = registros.filter(r => r.funcionario === funcSelecionado);
-    let diasUnicos = [...new Set(registrosFunc.map(r=>r.data))];
+    let diasUnicos = [...new Set(regsFunc.map(r=>r.data))];
     diasUnicos.forEach(dia => {
         let dataParts = dia.split('/');
-        if(dataParts.length===3){
-            let diaMes = parseInt(dataParts[1]);
-            let ano = parseInt(dataParts[2]);
-            if(diaMes === (agora.getMonth()+1) && ano === agora.getFullYear()){
-                totalMinutosMes += calcularHorasTrabalhadasDia(registrosFunc, dia);
-            }
+        if(dataParts.length===3 && parseInt(dataParts[1]) === (agora.getMonth()+1) && parseInt(dataParts[2]) === agora.getFullYear()){
+            totalMinutosMes += calcularHorasTrabalhadasDia(regsFunc, dia);
         }
     });
-    let horasMes = (totalMinutosMes / 60).toFixed(1);
-    document.getElementById('totalMes').innerHTML = `${horasMes}h`;
+    document.getElementById('totalMes').innerHTML = `${(totalMinutosMes/60).toFixed(1)}h`;
 }
 
 let filtroAtual = {func: '', inicio: '', fim: ''};
@@ -895,16 +1015,12 @@ function limparFiltros() {
 
 function renderTabela() {
     let filtrados = [...registros];
-    
-    if (filtroAtual.func) {
-        filtrados = filtrados.filter(r => r.funcionario === filtroAtual.func);
-    }
+    if (filtroAtual.func) filtrados = filtrados.filter(r => r.funcionario === filtroAtual.func);
     if (filtroAtual.inicio) {
         let inicioDate = new Date(filtroAtual.inicio);
         filtrados = filtrados.filter(r => {
             let [dia, mes, ano] = r.data.split('/');
-            let regDate = new Date(`${ano}-${mes}-${dia}`);
-            return regDate >= inicioDate;
+            return new Date(`${ano}-${mes}-${dia}`) >= inicioDate;
         });
     }
     if (filtroAtual.fim) {
@@ -912,44 +1028,30 @@ function renderTabela() {
         fimDate.setHours(23,59,59);
         filtrados = filtrados.filter(r => {
             let [dia, mes, ano] = r.data.split('/');
-            let regDate = new Date(`${ano}-${mes}-${dia}`);
-            return regDate <= fimDate;
+            return new Date(`${ano}-${mes}-${dia}`) <= fimDate;
         });
     }
-    
     filtrados.sort((a,b)=> (b.timestamp || '').localeCompare(a.timestamp || ''));
-    
     let tbody = document.getElementById('tb');
     tbody.innerHTML = '';
     if (filtrados.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5">Nenhum registro encontrado</td></tr>';
         return;
     }
-    
-    filtrados.forEach((reg, idx) => {
-        const originalIndex = registros.findIndex(r => 
-            r.timestamp === reg.timestamp && r.hora === reg.hora && r.data === reg.data && r.funcionario === reg.funcionario
-        );
-        
-        let tipoExibicao = {
-            'entrada':'🟢 Entrada', 'almoco_saida':'🍽️ Saída Almoço',
-            'almoco_retorno':'🔙 Retorno Almoço', 'saida':'🔴 Saída'
-        }[reg.tipo] || reg.tipo;
-        
+    filtrados.forEach((reg) => {
+        const originalIndex = registros.findIndex(r => r.timestamp === reg.timestamp);
+        let tipoExibicao = {'entrada':'🟢 Entrada','almoco_saida':'🍽️ Saída Almoço','almoco_retorno':'🔙 Retorno Almoço','saida':'🔴 Saída'}[reg.tipo];
         let row = tbody.insertRow();
         row.insertCell(0).innerText = reg.funcionario;
         row.insertCell(1).innerText = reg.data;
         row.insertCell(2).innerHTML = `<span class="status-badge">${tipoExibicao}</span>`;
         row.insertCell(3).innerText = reg.hora;
-        
         let acaoCell = row.insertCell(4);
-        
         let btnEdit = document.createElement('button');
         btnEdit.innerText = '✏️ Editar';
         btnEdit.className = 'action-btn edit-btn';
         btnEdit.onclick = () => editarRegistro(originalIndex);
         acaoCell.appendChild(btnEdit);
-        
         let btnDel = document.createElement('button');
         btnDel.innerText = '🗑️ Excluir';
         btnDel.className = 'action-btn delete-btn';
@@ -967,10 +1069,10 @@ function renderTabela() {
 }
 
 function exportarCSV() {
-    let cabecalho = "Funcionario,Data,Hora,Evento,Geolocalizacao\n";
+    let cabecalho = "Funcionario,Data,Hora,Evento\n";
     let linhas = registros.map(r => {
         let tipoMap = {'entrada':'Entrada','almoco_saida':'Saída Almoço','almoco_retorno':'Retorno Almoço','saida':'Saída'};
-        return `"${r.funcionario}","${r.data}","${r.hora}","${tipoMap[r.tipo] || r.tipo}","${r.geo || ''}"`;
+        return `"${r.funcionario}","${r.data}","${r.hora}","${tipoMap[r.tipo]}"`;
     }).join("\n");
     let blob = new Blob([cabecalho + linhas], {type: 'text/csv;charset=utf-8;'});
     let link = document.createElement('a');
@@ -980,40 +1082,17 @@ function exportarCSV() {
     URL.revokeObjectURL(link.href);
 }
 
-function exportarPDF() {
-    const element = document.getElementById('tabelaRegistros');
-    const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5],
-        filename: `registros_ponto_${new Date().toISOString().slice(0,19)}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, letterRendering: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-    };
-    html2pdf().set(opt).from(element).save();
-}
-
 if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(pos => {
-        document.getElementById('geo').innerHTML = `📍 Localização atual: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)} (capturada no registro)`;
+        document.getElementById('geo').innerHTML = `📍 Localização disponível: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
     }, () => {
-        document.getElementById('geo').innerHTML = '📍 Permissão de localização negada. Pontos serão registrados sem coordenadas.';
+        document.getElementById('geo').innerHTML = '📍 Localização não disponível';
     });
-} else {
-    document.getElementById('geo').innerHTML = '📍 Geolocalização não suportada.';
 }
 
 atualizarSelectFuncionarios();
 renderTabela();
-setInterval(() => {
-    atualizarDashboard();
-}, 3000);
-
-window.addEventListener('click', (event) => {
-    const modal = document.getElementById('editModal');
-    if (event.target === modal) {
-        fecharModal();
-    }
-});
+setInterval(atualizarDashboard, 3000);
 </script>
 </body>
 </html>
