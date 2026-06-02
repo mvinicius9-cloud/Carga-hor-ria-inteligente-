@@ -3,7 +3,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Ponto Inteligente - Gerenciador de Jornada</title>
 <style>
 * {
@@ -78,10 +78,9 @@ body {
 }
 
 @keyframes swing {
-    0% { transform: rotate(0deg); }
+    0%, 100% { transform: rotate(0deg); }
     25% { transform: rotate(10deg); }
     75% { transform: rotate(-10deg); }
-    100% { transform: rotate(0deg); }
 }
 
 .clock-time {
@@ -102,8 +101,7 @@ body {
     border-radius: 24px;
     padding: 20px 24px;
     margin-bottom: 24px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
-    transition: all 0.2s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     border: 1px solid #e2e8f0;
 }
 
@@ -165,16 +163,11 @@ button {
     border: none;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 button:hover {
     background: #1f5e7a;
     transform: translateY(-1px);
-}
-
-button:active {
-    transform: translateY(1px);
 }
 
 .btn-outline {
@@ -187,14 +180,13 @@ button:active {
     background: #e6f4f8;
 }
 
-.btn-pdf {
-    background: #dc2626;
+.btn-print {
+    background: #f59e0b;
     color: white;
-    border: none;
 }
 
-.btn-pdf:hover {
-    background: #b91c1c;
+.btn-print:hover {
+    background: #d97706;
 }
 
 .jornada-buttons {
@@ -212,12 +204,10 @@ button:active {
     background: #f1f5f9;
     color: #1e293b;
     border: 1px solid #cbd5e1;
-    box-shadow: none;
 }
 
 .jornada-buttons button:hover {
     background: #e2e8f0;
-    border-color: #94a3b8;
 }
 
 .btn-entrada { border-left: 4px solid #10b981 !important; }
@@ -288,7 +278,6 @@ th {
     background: #eef2ff;
     padding: 14px 8px;
     font-weight: 600;
-    color: #1e293b;
     border-bottom: 2px solid #cbd5e1;
 }
 
@@ -296,10 +285,6 @@ td {
     padding: 10px 8px;
     border-bottom: 1px solid #e2e8f0;
     text-align: center;
-}
-
-tr:hover {
-    background: #f9fbfd;
 }
 
 .filtros {
@@ -318,11 +303,6 @@ tr:hover {
     font-size: 0.75rem;
 }
 
-.btn-pequeno:hover {
-    background: #e2e8f0;
-    color: #0f172a;
-}
-
 .action-btn {
     background: none;
     padding: 5px 10px;
@@ -338,20 +318,10 @@ tr:hover {
     border: none;
 }
 
-.edit-btn:hover {
-    background: #bfdbfe;
-    transform: none;
-}
-
 .delete-btn {
     background: #fee2e2;
     color: #b91c1c;
     border: none;
-}
-
-.delete-btn:hover {
-    background: #fecaca;
-    transform: none;
 }
 
 .status-badge {
@@ -382,12 +352,6 @@ tr:hover {
     border-radius: 28px;
     width: 90%;
     max-width: 450px;
-    box-shadow: 0 20px 35px rgba(0,0,0,0.2);
-}
-
-.modal-content h3 {
-    margin-top: 0;
-    color: #0f3b5c;
 }
 
 .modal-buttons {
@@ -399,17 +363,13 @@ tr:hover {
 
 @media (max-width: 700px) {
     body { padding: 12px; }
-    .card { padding: 16px; }
-    .jornada-buttons button { font-size: 0.8rem; min-width: 70px; }
-    .saldo-card span:last-child { font-size: 1.3rem; }
     .clock-time { font-size: 1.4rem; }
-    .clock-container { padding: 6px 16px; }
+    .dashboard { flex-direction: column; align-items: stretch; }
 }
 </style>
 </head>
 <body>
 <div class="container">
-    <!-- Topo com relógio digital animado -->
     <div class="top-bar">
         <div class="logo-area">
             <div class="logo-icon">⏱️🐾</div>
@@ -424,25 +384,23 @@ tr:hover {
         </div>
     </div>
 
-    <!-- Card Funcionário -->
     <div class="card">
         <h3>👤 Funcionários</h3>
         <div class="row-flex">
             <div class="input-group">
                 <label>Nome completo</label>
-                <input id="nome" placeholder="Ex: Ana Silva" autocomplete="off">
+                <input id="nome" placeholder="Ex: Ana Silva">
             </div>
             <button onclick="addFuncionario()">➕ Cadastrar</button>
             <div class="input-group">
                 <label>Selecionar funcionário</label>
                 <select id="funcionario"></select>
             </div>
-            <button onclick="editarFuncionario()" class="btn-outline" style="background:#dbeafe;color:#1e40af;">✏️ Editar nome</button>
-            <button onclick="excluirFuncionario()" class="btn-outline" style="background:#fff1f0;color:#b91c1c;">🗑️ Excluir</button>
+            <button onclick="editarFuncionario()" class="btn-outline">✏️ Editar nome</button>
+            <button onclick="excluirFuncionario()" class="btn-outline">🗑️ Excluir</button>
         </div>
     </div>
 
-    <!-- Card Registro Rápido -->
     <div class="card">
         <h3>📌 Marcar Ponto</h3>
         <div class="jornada-buttons">
@@ -451,318 +409,79 @@ tr:hover {
             <button class="btn-almoco-retorno" onclick="registrar('almoco_retorno')">🔙 RETORNO ALMOÇO</button>
             <button class="btn-saida" onclick="registrar('saida')">🔴 SAÍDA</button>
         </div>
-        <div id="geo" class="local-info">📍 Aguardando permissão de localização...</div>
-        <div id="ultimoRegistro" style="font-size:0.75rem; margin-top: 8px; color:#475569;"></div>
+        <div id="geo" class="local-info">📍 Aguardando permissão...</div>
+        <div id="ultimoRegistro" style="font-size:0.75rem; margin-top: 8px;"></div>
     </div>
 
-    <!-- Dashboard inteligente -->
     <div class="card">
-        <h3>📊 Dashboard & Banco de Horas</h3>
+        <h3>📊 Dashboard</h3>
         <div class="dashboard">
             <div class="saldo-card">
                 <span>⚖️ Banco de Horas (HOJE)</span>
                 <span id="saldoHoje">0h 0min</span>
             </div>
             <div class="saldo-card">
-                <span>📅 Total de horas trabalhadas (mês)</span>
+                <span>📅 Horas trabalhadas (mês)</span>
                 <span id="totalMes">0h</span>
             </div>
-            <div class="resumo-hoje" id="statusHoje">
-                ⏳ Nenhum ponto hoje
-            </div>
-            <div>
-                <button onclick="exportarPDF()" class="btn-pdf">📄 Exportar PDF</button>
-                <button onclick="exportarCSV()" class="btn-outline">📎 Exportar CSV</button>
+            <div class="resumo-hoje" id="statusHoje">⏳ Nenhum ponto hoje</div>
+            <div style="display: flex; gap: 8px;">
+                <button onclick="imprimirHistorico()" class="btn-print">🖨️ IMPRIMIR</button>
+                <button onclick="exportarCSV()" class="btn-outline">📎 CSV</button>
             </div>
         </div>
     </div>
 
-    <!-- Filtros e Tabela -->
     <div class="card">
         <h3>📋 Histórico de Registros</h3>
         <div class="filtros">
-            <div class="input-group">
-                <label>Filtrar funcionário</label>
-                <select id="filtroFuncionario">
-                    <option value="">Todos</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label>Data inicial</label>
-                <input type="date" id="dataInicio">
-            </div>
-            <div class="input-group">
-                <label>Data final</label>
-                <input type="date" id="dataFim">
-            </div>
+            <select id="filtroFuncionario"><option value="">Todos os funcionários</option></select>
+            <input type="date" id="dataInicio" placeholder="Data inicial">
+            <input type="date" id="dataFim" placeholder="Data final">
             <button onclick="aplicarFiltros()" class="btn-outline">🔍 Filtrar</button>
             <button onclick="limparFiltros()" class="btn-pequeno">Limpar</button>
+            <button onclick="imprimirHistorico()" class="btn-pequeno" style="background:#f59e0b; color:white;">🖨️ Imprimir</button>
         </div>
         <div class="table-wrapper">
             <table id="tabelaRegistros">
-                <thead>
-                    <tr>
-                        <th>Funcionário</th><th>Data</th><th>Evento</th><th>Hora</th><th>Ações</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Funcionário</th><th>Data</th><th>Evento</th><th>Hora</th><th>Ações</th></tr></thead>
                 <tbody id="tb"></tbody>
             </table>
         </div>
-        <p style="text-align:right; font-size:0.7rem; margin-top:10px;">* Banco de horas diário: Saldo calculado com base na jornada padrão 8h (48min almoço)</p>
+        <p style="text-align:right; font-size:0.7rem; margin-top:10px; color:#666;">* Use os filtros para selecionar o período desejado antes de imprimir</p>
     </div>
 </div>
 
-<!-- Modal de Edição -->
 <div id="editModal" class="modal">
     <div class="modal-content">
-        <h3 id="modalTitle">Editar Registro</h3>
-        <div class="input-group" style="margin-bottom: 15px;">
-            <label>Funcionário</label>
-            <select id="editFuncionario"></select>
-        </div>
-        <div class="input-group" style="margin-bottom: 15px;">
-            <label>Data</label>
-            <input type="date" id="editData">
-        </div>
-        <div class="input-group" style="margin-bottom: 15px;">
-            <label>Hora</label>
-            <input type="time" id="editHora" step="1">
-        </div>
-        <div class="input-group" style="margin-bottom: 15px;">
-            <label>Evento</label>
-            <select id="editTipo">
-                <option value="entrada">🟢 Entrada</option>
-                <option value="almoco_saida">🍽️ Saída Almoço</option>
-                <option value="almoco_retorno">🔙 Retorno Almoço</option>
-                <option value="saida">🔴 Saída</option>
-            </select>
-        </div>
+        <h3>✏️ Editar Registro</h3>
+        <select id="editFuncionario" style="width:100%; margin-bottom:10px; padding:8px;"></select>
+        <input type="date" id="editData" style="width:100%; margin-bottom:10px; padding:8px;">
+        <input type="time" id="editHora" style="width:100%; margin-bottom:10px; padding:8px;">
+        <select id="editTipo" style="width:100%; margin-bottom:10px; padding:8px;">
+            <option value="entrada">🟢 Entrada</option>
+            <option value="almoco_saida">🍽️ Saída Almoço</option>
+            <option value="almoco_retorno">🔙 Retorno Almoço</option>
+            <option value="saida">🔴 Saída</option>
+        </select>
         <div class="modal-buttons">
             <button onclick="fecharModal()" class="btn-outline">Cancelar</button>
-            <button onclick="salvarEdicao()" style="background: #2c7da0;">Salvar Alterações</button>
+            <button onclick="salvarEdicao()">Salvar</button>
         </div>
     </div>
 </div>
 
 <script>
-// Função para gerar PDF sem dependências externas - método nativo de impressão
-// Isso funciona 100% em APKs pois usa o mecanismo nativo do Android
-function exportarPDF() {
-    // Verificar se há registros para exportar
-    if (registros.length === 0) {
-        alert('Nenhum registro para exportar!');
-        return;
-    }
-    
-    // Criar uma nova janela para impressão/PDF
-    const conteudo = gerarConteudoPDF();
-    
-    // Criar um iframe oculto para gerar o PDF (mais compatível com WebView)
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
-    
-    const iframeDoc = iframe.contentWindow.document;
-    iframeDoc.open();
-    iframeDoc.write(conteudo);
-    iframeDoc.close();
-    
-    // Aguardar carregamento e chamar print
-    setTimeout(() => {
-        try {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-            
-            // Remover o iframe após o print (ou após um tempo)
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-            }, 1000);
-        } catch (e) {
-            console.error('Erro ao gerar PDF:', e);
-            alert('Erro ao gerar PDF. Tente novamente.');
-            document.body.removeChild(iframe);
-        }
-    }, 500);
-}
-
-function gerarConteudoPDF() {
-    // Obter dados filtrados para o PDF
-    let dadosExport = [...registros];
-    
-    // Aplicar filtros atuais ao PDF
-    if (filtroAtual.func) {
-        dadosExport = dadosExport.filter(r => r.funcionario === filtroAtual.func);
-    }
-    if (filtroAtual.inicio) {
-        let inicioDate = new Date(filtroAtual.inicio);
-        dadosExport = dadosExport.filter(r => {
-            let [dia, mes, ano] = r.data.split('/');
-            let regDate = new Date(`${ano}-${mes}-${dia}`);
-            return regDate >= inicioDate;
-        });
-    }
-    if (filtroAtual.fim) {
-        let fimDate = new Date(filtroAtual.fim);
-        fimDate.setHours(23, 59, 59);
-        dadosExport = dadosExport.filter(r => {
-            let [dia, mes, ano] = r.data.split('/');
-            let regDate = new Date(`${ano}-${mes}-${dia}`);
-            return regDate <= fimDate;
-        });
-    }
-    
-    dadosExport.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
-    
-    // Construir HTML do PDF
-    const agora = new Date();
-    const dataHora = agora.toLocaleString('pt-BR');
-    
-    let linhasTabela = '';
-    dadosExport.forEach(reg => {
-        const tipoMap = {
-            'entrada': '🟢 Entrada',
-            'almoco_saida': '🍽️ Saída Almoço',
-            'almoco_retorno': '🔙 Retorno Almoço',
-            'saida': '🔴 Saída'
-        };
-        linhasTabela += `
-            <tr>
-                <td style="border:1px solid #ccc; padding:8px;">${reg.funcionario}</td>
-                <td style="border:1px solid #ccc; padding:8px;">${reg.data}</td>
-                <td style="border:1px solid #ccc; padding:8px;">${tipoMap[reg.tipo] || reg.tipo}</td>
-                <td style="border:1px solid #ccc; padding:8px;">${reg.hora}</td>
-            </tr>
-        `;
-    });
-    
-    return `<!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Relatório de Pontos</title>
-        <style>
-            body {
-                font-family: 'Segoe UI', Arial, sans-serif;
-                margin: 20px;
-                padding: 20px;
-            }
-            .header {
-                text-align: center;
-                margin-bottom: 30px;
-                border-bottom: 2px solid #2c7da0;
-                padding-bottom: 15px;
-            }
-            .header h1 {
-                color: #1e293b;
-                margin: 0 0 5px 0;
-            }
-            .header p {
-                color: #475569;
-                margin: 5px 0;
-            }
-            .info {
-                margin-bottom: 20px;
-                padding: 10px;
-                background: #f1f5f9;
-                border-radius: 8px;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 15px;
-            }
-            th {
-                background: #2c7da0;
-                color: white;
-                padding: 10px;
-                border: 1px solid #1f5e7a;
-            }
-            td {
-                border: 1px solid #cbd5e1;
-                padding: 8px;
-            }
-            .footer {
-                margin-top: 30px;
-                text-align: center;
-                font-size: 0.8rem;
-                color: #64748b;
-                border-top: 1px solid #e2e8f0;
-                padding-top: 15px;
-            }
-            @media print {
-                body {
-                    margin: 0;
-                    padding: 10px;
-                }
-                .no-print {
-                    display: none;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <h1>⏱️ Ponto Inteligente - Relatório de Registros</h1>
-            <p>Gerado em: ${dataHora}</p>
-        </div>
-        <div class="info">
-            <strong>📊 Resumo:</strong> Total de registros: ${dadosExport.length}<br>
-            ${filtroAtual.func ? `<strong>👤 Funcionário:</strong> ${filtroAtual.func}<br>` : ''}
-            ${filtroAtual.inicio ? `<strong>📅 Data inicial:</strong> ${new Date(filtroAtual.inicio).toLocaleDateString('pt-BR')}<br>` : ''}
-            ${filtroAtual.fim ? `<strong>📅 Data final:</strong> ${new Date(filtroAtual.fim).toLocaleDateString('pt-BR')}<br>` : ''}
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Funcionário</th>
-                    <th>Data</th>
-                    <th>Evento</th>
-                    <th>Hora</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${linhasTabela || '<tr><td colspan="4" style="text-align:center;">Nenhum registro encontrado</td></tr>'}
-            </tbody>
-        </table>
-        <div class="footer">
-            <p>Documento gerado pelo sistema Ponto Inteligente | Todos os direitos reservados</p>
-            <p>* Este documento serve como comprovante de registros de ponto</p>
-        </div>
-        <script>
-            window.onload = function() {
-                setTimeout(function() {
-                    window.print();
-                }, 100);
-            };
-        <\/script>
-    </body>
-    </html>`;
-}
-
 let funcionarios = JSON.parse(localStorage.getItem('funcionarios') || '[]');
 let registros = JSON.parse(localStorage.getItem('registros') || '[]');
 let registroEditando = null;
+let filtroAtual = {func: '', inicio: '', fim: ''};
 
-// Relógio digital animado
+// Relógio
 function atualizarRelogio() {
     const agora = new Date();
-    const horas = String(agora.getHours()).padStart(2, '0');
-    const minutos = String(agora.getMinutes()).padStart(2, '0');
-    const segundos = String(agora.getSeconds()).padStart(2, '0');
-    const timeString = `${horas}:${minutos}:${segundos}`;
-    
-    const dia = String(agora.getDate()).padStart(2, '0');
-    const mes = String(agora.getMonth() + 1).padStart(2, '0');
-    const ano = agora.getFullYear();
-    const dataString = `${dia}/${mes}/${ano}`;
-    
-    const clockElement = document.getElementById('digitalClock');
-    const dateElement = document.getElementById('currentDate');
-    if (clockElement) clockElement.textContent = timeString;
-    if (dateElement) dateElement.textContent = dataString;
+    document.getElementById('digitalClock').textContent = agora.toLocaleTimeString('pt-BR');
+    document.getElementById('currentDate').textContent = agora.toLocaleDateString('pt-BR');
 }
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
@@ -772,136 +491,92 @@ function salvar() {
     localStorage.setItem('registros', JSON.stringify(registros));
 }
 
-function atualizarSelectFuncionarios() {
-    const selectFunc = document.getElementById('funcionario');
-    const filtroSelect = document.getElementById('filtroFuncionario');
-    const editSelect = document.getElementById('editFuncionario');
-    if (!selectFunc) return;
-    
-    selectFunc.innerHTML = '';
-    filtroSelect.innerHTML = '<option value="">Todos</option>';
-    editSelect.innerHTML = '';
-    
-    if (funcionarios.length === 0) {
-        const opt = document.createElement('option');
-        opt.textContent = '-- Nenhum funcionário --';
-        opt.value = '';
-        selectFunc.appendChild(opt);
-        filtroSelect.appendChild(opt.cloneNode(true));
-        editSelect.appendChild(opt.cloneNode(true));
-    } else {
-        funcionarios.forEach(f => {
-            let opt = document.createElement('option');
-            opt.textContent = f;
-            opt.value = f;
-            selectFunc.appendChild(opt);
-            let optFiltro = document.createElement('option');
-            optFiltro.textContent = f;
-            optFiltro.value = f;
-            filtroSelect.appendChild(optFiltro);
-            let optEdit = document.createElement('option');
-            optEdit.textContent = f;
-            optEdit.value = f;
-            editSelect.appendChild(optEdit);
-        });
-    }
+function atualizarSelects() {
+    const selects = ['funcionario', 'filtroFuncionario', 'editFuncionario'];
+    selects.forEach(id => {
+        const select = document.getElementById(id);
+        if(select) {
+            const valorAntigo = select.value;
+            select.innerHTML = '';
+            if(funcionarios.length === 0) {
+                select.innerHTML = '<option value="">-- Nenhum funcionário --</option>';
+            } else {
+                select.innerHTML = '<option value="">Todos os funcionários</option>';
+                funcionarios.forEach(f => {
+                    const opt = document.createElement('option');
+                    opt.value = f;
+                    opt.textContent = f;
+                    select.appendChild(opt);
+                });
+            }
+            if(valorAntigo && funcionarios.includes(valorAntigo)) select.value = valorAntigo;
+        }
+    });
 }
 
 function addFuncionario() {
-    let nome = document.getElementById('nome').value.trim();
-    if (!nome) { alert('Digite um nome válido'); return; }
-    if (funcionarios.includes(nome)) { alert('Funcionário já cadastrado!'); return; }
+    const nome = document.getElementById('nome').value.trim();
+    if(!nome) return alert('Digite um nome');
+    if(funcionarios.includes(nome)) return alert('Já existe');
     funcionarios.push(nome);
     salvar();
-    atualizarSelectFuncionarios();
+    atualizarSelects();
     document.getElementById('nome').value = '';
-    renderTabela();
 }
 
 function editarFuncionario() {
-    let selecionado = document.getElementById('funcionario').value;
-    if (!selecionado || selecionado === '-- Nenhum funcionário --') { 
-        alert('Selecione um funcionário para editar'); 
-        return; 
-    }
-    let novoNome = prompt(`Editar nome de "${selecionado}" para:`, selecionado);
-    if (!novoNome || novoNome.trim() === '') return;
-    if (funcionarios.includes(novoNome.trim()) && novoNome.trim() !== selecionado) {
-        alert('Este nome já existe!');
-        return;
-    }
-    const nomeAntigo = selecionado;
-    const nomeNovo = novoNome.trim();
-    const index = funcionarios.indexOf(nomeAntigo);
-    if (index !== -1) {
-        funcionarios[index] = nomeNovo;
-        registros = registros.map(r => {
-            if (r.funcionario === nomeAntigo) {
-                return { ...r, funcionario: nomeNovo };
-            }
-            return r;
-        });
+    const velho = document.getElementById('funcionario').value;
+    if(!velho) return alert('Selecione um funcionário');
+    const novo = prompt('Novo nome:', velho);
+    if(!novo || novo === velho) return;
+    const index = funcionarios.indexOf(velho);
+    if(index !== -1) {
+        funcionarios[index] = novo;
+        registros = registros.map(r => r.funcionario === velho ? {...r, funcionario: novo} : r);
         salvar();
-        atualizarSelectFuncionarios();
+        atualizarSelects();
         renderTabela();
-        alert(`Funcionário renomeado para "${nomeNovo}"`);
     }
 }
 
 function excluirFuncionario() {
-    let selecionado = document.getElementById('funcionario').value;
-    if (!selecionado || selecionado === '-- Nenhum funcionário --') { 
-        alert('Selecione um funcionário para excluir'); 
-        return; 
+    const func = document.getElementById('funcionario').value;
+    if(!func) return alert('Selecione um funcionário');
+    if(confirm(`Remover ${func} e todos os registros?`)) {
+        funcionarios = funcionarios.filter(f => f !== func);
+        registros = registros.filter(r => r.funcionario !== func);
+        salvar();
+        atualizarSelects();
+        renderTabela();
     }
-    if (!confirm(`Remover "${selecionado}" e TODOS os seus registros?`)) return;
-    funcionarios = funcionarios.filter(f => f !== selecionado);
-    registros = registros.filter(r => r.funcionario !== selecionado);
-    salvar();
-    atualizarSelectFuncionarios();
-    renderTabela();
-    atualizarDashboard();
 }
 
 function registrar(tipo) {
-    let func = document.getElementById('funcionario').value;
-    if (!func || func === '-- Nenhum funcionário --') { 
-        alert('Cadastre ou selecione um funcionário primeiro.'); 
-        return; 
-    }
-    let agora = new Date();
-    let dataStr = agora.toLocaleDateString('pt-BR');
-    let horaStr = agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    
-    let item = {
+    const func = document.getElementById('funcionario').value;
+    if(!func) return alert('Selecione um funcionário');
+    const agora = new Date();
+    const item = {
         funcionario: func,
-        data: dataStr,
-        hora: horaStr,
+        data: agora.toLocaleDateString('pt-BR'),
+        hora: agora.toLocaleTimeString('pt-BR'),
         tipo: tipo,
-        timestamp: new Date().toISOString(),
-        geo: ''
+        timestamp: agora.toISOString()
     };
     registros.push(item);
     salvar();
     renderTabela();
-    atualizarDashboard();
-    const ultimoDiv = document.getElementById('ultimoRegistro');
-    ultimoDiv.innerHTML = `✅ Último ponto: ${func} - ${tipo} às ${horaStr}`;
-    setTimeout(() => {
-        if(ultimoDiv) ultimoDiv.style.opacity = '0.6';
-    }, 3000);
+    document.getElementById('ultimoRegistro').innerHTML = `✅ ${tipo} registrado às ${item.hora}`;
+    setTimeout(() => document.getElementById('ultimoRegistro').innerHTML = '', 3000);
 }
 
 function editarRegistro(index) {
     registroEditando = index;
-    const reg = registros[index];
-    document.getElementById('editFuncionario').value = reg.funcionario;
-    const [dia, mes, ano] = reg.data.split('/');
-    const dataISO = `${ano}-${mes}-${dia}`;
-    document.getElementById('editData').value = dataISO;
-    let horaValue = reg.hora.substring(0, 5);
-    document.getElementById('editHora').value = horaValue;
-    document.getElementById('editTipo').value = reg.tipo;
+    const r = registros[index];
+    document.getElementById('editFuncionario').value = r.funcionario;
+    const [d,m,a] = r.data.split('/');
+    document.getElementById('editData').value = `${a}-${m}-${d}`;
+    document.getElementById('editHora').value = r.hora.substring(0,5);
+    document.getElementById('editTipo').value = r.tipo;
     document.getElementById('editModal').style.display = 'block';
 }
 
@@ -911,92 +586,71 @@ function fecharModal() {
 }
 
 function salvarEdicao() {
-    if (registroEditando === null) return;
-    const novoFunc = document.getElementById('editFuncionario').value;
-    const novaData = document.getElementById('editData').value;
-    const novaHora = document.getElementById('editHora').value;
-    const novoTipo = document.getElementById('editTipo').value;
-    const dataParts = novaData.split('-');
-    const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
-    let horaCompleta = novaHora + ':00';
+    if(registroEditando === null) return;
+    const [a,m,d] = document.getElementById('editData').value.split('-');
     registros[registroEditando] = {
         ...registros[registroEditando],
-        funcionario: novoFunc,
-        data: dataFormatada,
-        hora: horaCompleta,
-        tipo: novoTipo,
+        funcionario: document.getElementById('editFuncionario').value,
+        data: `${d}/${m}/${a}`,
+        hora: document.getElementById('editHora').value + ':00',
+        tipo: document.getElementById('editTipo').value,
         timestamp: new Date().toISOString()
     };
     salvar();
-    renderTabela();
     fecharModal();
-    alert('Registro atualizado!');
+    renderTabela();
 }
 
-function calcularHorasTrabalhadasDia(registrosFunc, dataAlvo) {
-    let diarios = registrosFunc.filter(r => r.data === dataAlvo).sort((a,b)=> (a.hora < b.hora ? -1 : 1));
-    let entrada = diarios.find(r => r.tipo === 'entrada');
-    let almocoSaida = diarios.find(r => r.tipo === 'almoco_saida');
-    let almocoRetorno = diarios.find(r => r.tipo === 'almoco_retorno');
-    let saida = diarios.find(r => r.tipo === 'saida');
-    if (!entrada || !saida) return 0;
-    function horaParaMinutos(horaStr) {
-        let [h,m] = horaStr.split(':');
-        return parseInt(h) * 60 + parseInt(m);
-    }
-    let inicio = horaParaMinutos(entrada.hora);
-    let fim = horaParaMinutos(saida.hora);
-    let almocoInicio = almocoSaida ? horaParaMinutos(almocoSaida.hora) : null;
-    let almocoFim = almocoRetorno ? horaParaMinutos(almocoRetorno.hora) : null;
-    let totalMinutos = fim - inicio;
-    if (almocoInicio && almocoFim && almocoFim > almocoInicio) {
-        totalMinutos -= (almocoFim - almocoInicio);
-    } else {
-        totalMinutos -= 48;
-    }
-    return Math.max(0, totalMinutos);
-}
-
-const JORNADA_PADRAO_MIN = 8 * 60;
-
-function formatarMinutos(min) {
-    let sinal = min >= 0 ? '' : '-';
-    let absMin = Math.abs(min);
-    let h = Math.floor(absMin / 60);
-    let m = absMin % 60;
-    return `${sinal}${h}h ${m}min`;
+function calcularHorasDia(regs, data) {
+    const diarios = regs.filter(r => r.data === data).sort((a,b)=> a.hora.localeCompare(b.hora));
+    const entrada = diarios.find(r => r.tipo === 'entrada');
+    const almocoSaida = diarios.find(r => r.tipo === 'almoco_saida');
+    const almocoRetorno = diarios.find(r => r.tipo === 'almoco_retorno');
+    const saida = diarios.find(r => r.tipo === 'saida');
+    if(!entrada || !saida) return 0;
+    const toMin = (h) => {
+        const [hr, mn] = h.split(':');
+        return parseInt(hr)*60 + parseInt(mn);
+    };
+    let total = toMin(saida.hora) - toMin(entrada.hora);
+    if(almocoSaida && almocoRetorno) total -= (toMin(almocoRetorno.hora) - toMin(almocoSaida.hora));
+    else total -= 48;
+    return Math.max(0, total);
 }
 
 function atualizarDashboard() {
-    let funcSelecionado = document.getElementById('funcionario').value;
-    if (!funcionarios.length || !funcSelecionado || funcSelecionado === '-- Nenhum funcionário --') {
+    const func = document.getElementById('funcionario').value;
+    if(!func || funcionarios.length === 0) {
         document.getElementById('saldoHoje').innerText = '0h 0min';
         document.getElementById('totalMes').innerText = '0h';
         document.getElementById('statusHoje').innerHTML = '👤 Selecione um funcionário';
         return;
     }
-    let hoje = new Date().toLocaleDateString('pt-BR');
-    let regsFunc = registros.filter(r => r.funcionario === funcSelecionado);
-    let minutosTrab = calcularHorasTrabalhadasDia(regsFunc, hoje);
-    let saldo = minutosTrab - JORNADA_PADRAO_MIN;
-    document.getElementById('saldoHoje').innerHTML = formatarMinutos(saldo);
-    let temEntrada = regsFunc.some(r => r.data === hoje && r.tipo === 'entrada');
-    let temSaida = regsFunc.some(r => r.data === hoje && r.tipo === 'saida');
-    let statusMsg = !temEntrada ? '⏳ Nenhum registro hoje' : (!temSaida ? '🟢 Em andamento' : `✅ Finalizado: ${Math.floor(minutosTrab/60)}h${minutosTrab%60}min`);
-    document.getElementById('statusHoje').innerHTML = statusMsg;
-    let agora = new Date();
-    let totalMinutosMes = 0;
-    let diasUnicos = [...new Set(regsFunc.map(r=>r.data))];
-    diasUnicos.forEach(dia => {
-        let dataParts = dia.split('/');
-        if(dataParts.length===3 && parseInt(dataParts[1]) === (agora.getMonth()+1) && parseInt(dataParts[2]) === agora.getFullYear()){
-            totalMinutosMes += calcularHorasTrabalhadasDia(regsFunc, dia);
+    const hoje = new Date().toLocaleDateString('pt-BR');
+    const regsFunc = registros.filter(r => r.funcionario === func);
+    const minutos = calcularHorasDia(regsFunc, hoje);
+    const saldo = minutos - 480;
+    const sinal = saldo >= 0 ? '' : '-';
+    const absSaldo = Math.abs(saldo);
+    document.getElementById('saldoHoje').innerHTML = `${sinal}${Math.floor(absSaldo/60)}h ${absSaldo%60}min`;
+    
+    const mesAtual = new Date().getMonth()+1;
+    const anoAtual = new Date().getFullYear();
+    let totalMes = 0;
+    [...new Set(regsFunc.map(r=>r.data))].forEach(data => {
+        const [d,m,a] = data.split('/');
+        if(parseInt(m) === mesAtual && parseInt(a) === anoAtual) {
+            totalMes += calcularHorasDia(regsFunc, data);
         }
     });
-    document.getElementById('totalMes').innerHTML = `${(totalMinutosMes/60).toFixed(1)}h`;
+    document.getElementById('totalMes').innerHTML = `${(totalMes/60).toFixed(1)}h`;
+    
+    const temEntrada = regsFunc.some(r => r.data === hoje && r.tipo === 'entrada');
+    const temSaida = regsFunc.some(r => r.data === hoje && r.tipo === 'saida');
+    if(!temEntrada) document.getElementById('statusHoje').innerHTML = '⏳ Nenhum registro hoje';
+    else if(temEntrada && !temSaida) document.getElementById('statusHoje').innerHTML = '🟢 Em andamento';
+    else document.getElementById('statusHoje').innerHTML = `✅ ${Math.floor(minutos/60)}h${minutos%60}min trabalhados`;
 }
-
-let filtroAtual = {func: '', inicio: '', fim: ''};
 
 function aplicarFiltros() {
     filtroAtual.func = document.getElementById('filtroFuncionario').value;
@@ -1013,86 +667,269 @@ function limparFiltros() {
     renderTabela();
 }
 
-function renderTabela() {
+function getDadosFiltrados() {
     let filtrados = [...registros];
-    if (filtroAtual.func) filtrados = filtrados.filter(r => r.funcionario === filtroAtual.func);
-    if (filtroAtual.inicio) {
-        let inicioDate = new Date(filtroAtual.inicio);
+    if(filtroAtual.func && filtroAtual.func !== '') filtrados = filtrados.filter(r => r.funcionario === filtroAtual.func);
+    if(filtroAtual.inicio) {
+        const inicio = new Date(filtroAtual.inicio);
         filtrados = filtrados.filter(r => {
-            let [dia, mes, ano] = r.data.split('/');
-            return new Date(`${ano}-${mes}-${dia}`) >= inicioDate;
+            const [d,m,a] = r.data.split('/');
+            return new Date(`${a}-${m}-${d}`) >= inicio;
         });
     }
-    if (filtroAtual.fim) {
-        let fimDate = new Date(filtroAtual.fim);
-        fimDate.setHours(23,59,59);
+    if(filtroAtual.fim) {
+        const fim = new Date(filtroAtual.fim);
+        fim.setHours(23,59,59);
         filtrados = filtrados.filter(r => {
-            let [dia, mes, ano] = r.data.split('/');
-            return new Date(`${ano}-${mes}-${dia}`) <= fimDate;
+            const [d,m,a] = r.data.split('/');
+            return new Date(`${a}-${m}-${d}`) <= fim;
         });
     }
-    filtrados.sort((a,b)=> (b.timestamp || '').localeCompare(a.timestamp || ''));
-    let tbody = document.getElementById('tb');
+    filtrados.sort((a,b)=> b.timestamp.localeCompare(a.timestamp));
+    return filtrados;
+}
+
+function renderTabela() {
+    const filtrados = getDadosFiltrados();
+    const tbody = document.getElementById('tb');
     tbody.innerHTML = '';
-    if (filtrados.length === 0) {
+    if(filtrados.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5">Nenhum registro encontrado</td></tr>';
         return;
     }
-    filtrados.forEach((reg) => {
+    filtrados.forEach((reg, idx) => {
         const originalIndex = registros.findIndex(r => r.timestamp === reg.timestamp);
-        let tipoExibicao = {'entrada':'🟢 Entrada','almoco_saida':'🍽️ Saída Almoço','almoco_retorno':'🔙 Retorno Almoço','saida':'🔴 Saída'}[reg.tipo];
-        let row = tbody.insertRow();
+        const tipos = {entrada:'🟢 Entrada', almoco_saida:'🍽️ Saída Almoço', almoco_retorno:'🔙 Retorno Almoço', saida:'🔴 Saída'};
+        const row = tbody.insertRow();
         row.insertCell(0).innerText = reg.funcionario;
         row.insertCell(1).innerText = reg.data;
-        row.insertCell(2).innerHTML = `<span class="status-badge">${tipoExibicao}</span>`;
+        row.insertCell(2).innerHTML = `<span class="status-badge">${tipos[reg.tipo]}</span>`;
         row.insertCell(3).innerText = reg.hora;
-        let acaoCell = row.insertCell(4);
-        let btnEdit = document.createElement('button');
-        btnEdit.innerText = '✏️ Editar';
+        const cell = row.insertCell(4);
+        const btnEdit = document.createElement('button');
+        btnEdit.textContent = '✏️';
         btnEdit.className = 'action-btn edit-btn';
         btnEdit.onclick = () => editarRegistro(originalIndex);
-        acaoCell.appendChild(btnEdit);
-        let btnDel = document.createElement('button');
-        btnDel.innerText = '🗑️ Excluir';
+        const btnDel = document.createElement('button');
+        btnDel.textContent = '🗑️';
         btnDel.className = 'action-btn delete-btn';
         btnDel.onclick = () => {
-            if(confirm('Remover este registro?')){
+            if(confirm('Remover este registro?')) {
                 registros.splice(originalIndex, 1);
                 salvar();
                 renderTabela();
                 atualizarDashboard();
             }
         };
-        acaoCell.appendChild(btnDel);
+        cell.appendChild(btnEdit);
+        cell.appendChild(btnDel);
     });
     atualizarDashboard();
 }
 
+// FUNÇÃO DE IMPRESSÃO - Funciona 100% em APKs e navegadores
+function imprimirHistorico() {
+    const dados = getDadosFiltrados();
+    
+    if(dados.length === 0) {
+        alert('Não há registros para imprimir com os filtros atuais.');
+        return;
+    }
+    
+    // Criar conteúdo para impressão
+    const conteudoImpressao = gerarHTMLImpressao(dados);
+    
+    // Abrir janela de impressão
+    const janelaImp = window.open('', '_blank');
+    if(!janelaImp) {
+        // Fallback se popup for bloqueado
+        alert('Permita popups para imprimir ou use o botão de imprimir do navegador (Ctrl+P)');
+        return;
+    }
+    
+    janelaImp.document.write(conteudoImpressao);
+    janelaImp.document.close();
+    
+    // Aguardar carregamento e chamar impressão
+    janelaImp.onload = function() {
+        setTimeout(() => {
+            janelaImp.print();
+            // Não fechar automaticamente para permitir salvar como PDF
+        }, 500);
+    };
+}
+
+function gerarHTMLImpressao(dados) {
+    // Agrupar por funcionário para melhor visualização
+    const agrupado = {};
+    dados.forEach(reg => {
+        if(!agrupado[reg.funcionario]) agrupado[reg.funcionario] = [];
+        agrupado[reg.funcionario].push(reg);
+    });
+    
+    const tipos = {entrada:'Entrada', almoco_saida:'Saída Almoço', almoco_retorno:'Retorno Almoço', saida:'Saída'};
+    let tabelas = '';
+    
+    for(const [funcionario, registrosFunc] of Object.entries(agrupado)) {
+        tabelas += `
+            <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #2c7da0; border-bottom: 2px solid #2c7da0; padding-bottom: 5px;">👤 Funcionário: ${funcionario}</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #2c7da0; color: white;">
+                            <th style="border: 1px solid #1f5e7a; padding: 8px;">Data</th>
+                            <th style="border: 1px solid #1f5e7a; padding: 8px;">Evento</th>
+                            <th style="border: 1px solid #1f5e7a; padding: 8px;">Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        registrosFunc.forEach(reg => {
+            tabelas += `
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${reg.data}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${tipos[reg.tipo]}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${reg.hora}</td>
+                </tr>
+            `;
+        });
+        tabelas += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    // Resumo dos filtros
+    let filtrosTexto = '';
+    if(filtroAtual.func && filtroAtual.func !== '') filtrosTexto += `<strong>Funcionário:</strong> ${filtroAtual.func}<br>`;
+    if(filtroAtual.inicio) filtrosTexto += `<strong>Data inicial:</strong> ${new Date(filtroAtual.inicio).toLocaleDateString('pt-BR')}<br>`;
+    if(filtroAtual.fim) filtrosTexto += `<strong>Data final:</strong> ${new Date(filtroAtual.fim).toLocaleDateString('pt-BR')}<br>`;
+    
+    return `<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Relatório de Pontos - Ponto Inteligente</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                margin: 20px;
+                padding: 20px;
+                background: white;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                border-bottom: 3px solid #2c7da0;
+                padding-bottom: 15px;
+            }
+            .header h1 {
+                color: #1e293b;
+                margin-bottom: 5px;
+            }
+            .header .logo {
+                font-size: 2rem;
+            }
+            .info {
+                background: #f1f5f9;
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 25px;
+                font-size: 0.9rem;
+            }
+            .footer {
+                margin-top: 30px;
+                text-align: center;
+                font-size: 0.7rem;
+                color: #64748b;
+                border-top: 1px solid #e2e8f0;
+                padding-top: 15px;
+            }
+            @media print {
+                body {
+                    margin: 0;
+                    padding: 10px;
+                }
+                .no-print {
+                    display: none;
+                }
+                table {
+                    break-inside: avoid;
+                }
+                div {
+                    break-inside: avoid;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo">⏱️🐾</div>
+            <h1>Ponto Inteligente</h1>
+            <p>Relatório de Registros de Ponto</p>
+        </div>
+        
+        <div class="info">
+            <strong>📅 Gerado em:</strong> ${new Date().toLocaleString('pt-BR')}<br>
+            <strong>📊 Total de registros:</strong> ${dados.length}<br>
+            ${filtrosTexto ? `<strong>🔍 Filtros aplicados:</strong><br>${filtrosTexto}` : ''}
+        </div>
+        
+        ${tabelas}
+        
+        <div class="footer">
+            <p>Documento gerado pelo sistema Ponto Inteligente</p>
+            <p>Este documento serve como comprovante de registro de ponto</p>
+        </div>
+        
+        <script>
+            // Auto-print ao carregar
+            window.onload = function() {
+                setTimeout(function() {
+                    window.print();
+                }, 300);
+            };
+        <\/script>
+    </body>
+    </html>`;
+}
+
 function exportarCSV() {
-    let cabecalho = "Funcionario,Data,Hora,Evento\n";
-    let linhas = registros.map(r => {
-        let tipoMap = {'entrada':'Entrada','almoco_saida':'Saída Almoço','almoco_retorno':'Retorno Almoço','saida':'Saída'};
-        return `"${r.funcionario}","${r.data}","${r.hora}","${tipoMap[r.tipo]}"`;
-    }).join("\n");
-    let blob = new Blob([cabecalho + linhas], {type: 'text/csv;charset=utf-8;'});
-    let link = document.createElement('a');
+    const dados = getDadosFiltrados();
+    if(dados.length === 0) {
+        alert('Nenhum registro para exportar');
+        return;
+    }
+    let csv = "Funcionario,Data,Hora,Evento\n";
+    const tipos = {entrada:'Entrada', almoco_saida:'Saída Almoço', almoco_retorno:'Retorno Almoço', saida:'Saída'};
+    dados.forEach(r => {
+        csv += `${r.funcionario},${r.data},${r.hora},${tipos[r.tipo]}\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `ponto_${new Date().toISOString().slice(0,19)}.csv`;
+    link.download = `ponto_${Date.now()}.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
 }
 
-if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(pos => {
-        document.getElementById('geo').innerHTML = `📍 Localização disponível: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
-    }, () => {
-        document.getElementById('geo').innerHTML = '📍 Localização não disponível';
-    });
+// Geolocalização
+if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        pos => document.getElementById('geo').innerHTML = `📍 Localização: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
+        () => document.getElementById('geo').innerHTML = '📍 Localização não permitida'
+    );
 }
 
-atualizarSelectFuncionarios();
+atualizarSelects();
 renderTabela();
-setInterval(atualizarDashboard, 3000);
+setInterval(atualizarDashboard, 2000);
 </script>
 </body>
 </html>
